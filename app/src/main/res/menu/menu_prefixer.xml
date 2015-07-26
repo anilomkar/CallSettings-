@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context="omkar.com.callsettings.Prefixer">
+    <item
+        android:id="@+id/addPrefix"
+        android:icon="@drawable/plus_icon"
+        android:title="addPrefix"
+        app:showAsAction="always"
+        />
+</menu>

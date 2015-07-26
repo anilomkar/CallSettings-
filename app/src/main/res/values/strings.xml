@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">CallSettings++</string>
+
+    <string name="prefixerName">Prefixer Activity Demo</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_prefixer">Prefixer</string>
+    <string name="search_num">Search Number</string>
+    <string name="replace_num">Replace Number</string>
+    <string name="title_activity_add_prefixer">AddPrefixer</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="save_prefix">Save</string>
+    <string name="prefix_name_label">Name:</string>
+    <string name="prefix_find_label">Find:</string>
+    <string name="prefix_replace_label">Replace:</string>
+</resources>
