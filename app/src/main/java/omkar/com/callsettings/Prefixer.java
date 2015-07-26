@@ -87,7 +87,7 @@ public class Prefixer extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == PREFIXER_RESULT_REQ_CODE && resultCode == RESULT_OK) {
-            PrefixerBean bean = (PrefixerBean) data.getSerializableExtra(PREFIXER_BEAN);
+            PrefixerBean bean = data.getExtras().getParcelable(PREFIXER_BEAN);
             try {
                 dao.savePrefixer(bean);
                 addToListView(bean);

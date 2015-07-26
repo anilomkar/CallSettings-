@@ -41,11 +41,7 @@ public class PrefixerView extends AppCompatActivity {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PrefixerBean bean = new PrefixerBean();
-                bean.setName(nameTxt.getText().toString());
-                bean.setStartingWith(findTxt.getText().toString());
-                bean.setReplaceWith(replaceTxt.getText().toString());
-
+                PrefixerBean bean = new PrefixerBean(nameTxt.getText().toString(), findTxt.getText().toString(), replaceTxt.getText().toString());
                 Intent outIntent = new Intent();
                 outIntent.putExtra(PREFIXER_BEAN, bean);
 
