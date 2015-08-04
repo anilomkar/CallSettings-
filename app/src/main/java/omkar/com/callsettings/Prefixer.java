@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +15,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Map;
 
+import omkar.com.callsettings.adapter.PrefixerListAdapter;
 import omkar.com.callsettings.dao.PrefixerDao;
 import omkar.com.callsettings.dao.PrefixerDaoFactory;
 import omkar.com.callsettings.model.PrefixerBean;
@@ -23,15 +23,17 @@ import omkar.com.callsettings.model.PrefixerScreenType;
 
 import static android.widget.Toast.LENGTH_LONG;
 import static omkar.com.callsettings.model.Constants.PREFIXER_BEAN;
+import static omkar.com.callsettings.model.Constants.PREFIXER_NAME;
 import static omkar.com.callsettings.model.Constants.PREFIXER_RESULT_REQ_CODE;
 import static omkar.com.callsettings.model.Constants.PREFIXER_SCREEN_TYPE;
+import static omkar.com.callsettings.model.Constants.PREFIXER_TRANSACTION_TYPE;
+import static omkar.com.callsettings.model.Constants.TRANSACTION_TYPE_SAVE;
 
 
 public class Prefixer extends AppCompatActivity {
 
     private PrefixerDao dao;
-    private Map<String, PrefixerBean> prefixers;
-    ArrayAdapter<String> listAdapter;
+    PrefixerListAdapter listAdapter;
 
 
     @Override
@@ -41,21 +43,25 @@ public class Prefixer extends AppCompatActivity {
 
         try {
             dao = PrefixerDaoFactory.getDao(this);
-            prefixers = dao.getPrefixers(false);
         } catch (Exception e) {
             throw new RuntimeException("Exception while loading prefixes from file", e);
         }
 
-        listAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, new ArrayList<String>(prefixers.keySet()));
+        listAdapter = new PrefixerListAdapter(this, dao);
 
-        ListView prefixerListView = (ListView) findViewById(R.id.prefixerList);
+        final ListView prefixerListView = (ListView) findViewById(R.id.prefixerList);
         prefixerListView.setAdapter(listAdapter);
+
         prefixerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                CharSequence prefixName = ((TextView) view).getText();
-                PrefixerBean bean = prefixers.get(prefixName.toString());
-                startPrefixerScreenActivity(bean);
+                TextView textView = (TextView) view.findViewById(R.id.prefixerNametw);
+                try {
+                    PrefixerBean bean = dao.getPrefixer(textView.getText().toString(), false);
+                    startPrefixerScreenActivity(bean);
+                } catch (Exception ex) {
+                    Log.d("PrefixerDao", "Exception while getting bean for name: " + textView.getText().toString(), ex);
+                }
             }
         });
     }
@@ -87,20 +93,39 @@ public class Prefixer extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == PREFIXER_RESULT_REQ_CODE && resultCode == RESULT_OK) {
-            PrefixerBean bean = data.getExtras().getParcelable(PREFIXER_BEAN);
-            try {
-                dao.savePrefixer(bean);
-                addToListView(bean);
-                Toast.makeText(this, String.format("Prefixer: %s saved successfully", bean.getName()), LENGTH_LONG).show();
-            } catch(Exception ex) {
-                Log.d("Prefixer", "Exception while adding prefixer", ex);
-                Toast.makeText(this, "Failed while saving Prefixer", LENGTH_LONG).show();
+            if(TRANSACTION_TYPE_SAVE.equals(data.getExtras().getString(PREFIXER_TRANSACTION_TYPE))) {
+               PrefixerBean bean = data.getExtras().getParcelable(PREFIXER_BEAN);
+                try {
+                    dao.savePrefixer(bean);
+                    addToListView(bean);
+                    Toast.makeText(this, String.format("Prefixer: %s saved successfully", bean.getName()), LENGTH_LONG).show();
+                } catch (Exception ex) {
+                    Log.d("Prefixer", "Exception while adding prefixer", ex);
+                    Toast.makeText(this, "Failed while saving Prefixer", LENGTH_LONG).show();
+                }
+            } else {
+                String prefixername = data.getExtras().getString(PREFIXER_NAME);
+                try {
+                    dao.deletePrefixer(prefixername);
+                    deleteFromListView(prefixername);
+                    Toast.makeText(this, String.format("Prefixer: %s deleted successfully", prefixername), LENGTH_LONG).show();
+                } catch(Exception ex) {
+                    Log.d("Prefixer", "Exception while deleting prefixer", ex);
+                    Toast.makeText(this, "Failed while deleting Prefixer", LENGTH_LONG).show();
+                }
             }
         }
     }
 
     private void addToListView(PrefixerBean bean) {
-        this.listAdapter.add(bean.getName());
+        if(!this.listAdapter.contains(bean.getName())) {
+            this.listAdapter.add(bean);
+            this.listAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private void deleteFromListView(String prefixerName) {
+        this.listAdapter.remove(prefixerName);
         this.listAdapter.notifyDataSetChanged();
     }
 }

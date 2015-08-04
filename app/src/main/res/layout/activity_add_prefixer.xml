@@ -48,12 +48,19 @@
         />
 
     <Button
+        android:id="@+id/deleteBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:layout_below="@+id/replaceTxt"
+        android:layout_toStartOf="@+id/saveBtn" />
+
+    <Button
         android:id="@+id/saveBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/replaceTxt"
-        android:layout_alignRight="@+id/replaceTxt"
         android:text="@string/save_prefix"
-        />
+        android:layout_below="@+id/replaceTxt"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

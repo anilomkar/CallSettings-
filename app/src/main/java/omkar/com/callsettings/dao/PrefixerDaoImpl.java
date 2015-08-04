@@ -32,6 +32,12 @@ public class PrefixerDaoImpl implements PrefixerDao {
     }
 
     @Override
+    public void deletePrefixer(String prefixerName) throws Exception {
+        prefixers.remove(prefixerName);
+        saveToFile(prefixers);
+    }
+
+    @Override
     public void savePrefixer(PrefixerBean prefixer) throws Exception {
         prefixers.put(prefixer.getName(), prefixer);
         saveToFile(prefixers);

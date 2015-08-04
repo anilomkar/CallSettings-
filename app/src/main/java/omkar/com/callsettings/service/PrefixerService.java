@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -14,6 +15,9 @@ import java.util.Map;
 import omkar.com.callsettings.dao.PrefixerDao;
 import omkar.com.callsettings.dao.PrefixerDaoFactory;
 import omkar.com.callsettings.model.PrefixerBean;
+import omkar.com.callsettings.util.AppUtil;
+
+import static omkar.com.callsettings.util.AppUtil.vibrate;
 
 /**
  * Created by AnilOmkar on 26/7/15.
@@ -54,11 +58,16 @@ public class PrefixerService extends Service {
 
                     for(Map.Entry<String, PrefixerBean> entry : prefixers.entrySet()) {
                         PrefixerBean bean = entry.getValue();
+                        if(!bean.isEnabled()) {
+                            continue;
+                        }
+
                         if(phoneNumber.startsWith(bean.getStartingWith())) {
                             phoneNumber = phoneNumber.replace(bean.getStartingWith(), bean.getReplaceWith());
                             setResultData(phoneNumber);
 
                             Toast.makeText(context, "Replaced number using CallerSettings++ :)", Toast.LENGTH_LONG).show();
+                            vibrate(context, 100);
                             break;
                         }
                     }

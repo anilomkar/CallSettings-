@@ -12,6 +12,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import omkar.com.callsettings.service.PrefixerService;
+
 
 public class CallSettingsPP extends AppCompatActivity {
 
@@ -35,6 +37,8 @@ public class CallSettingsPP extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
+        startService(new Intent(this, PrefixerService.class));
     }
 
     @Override

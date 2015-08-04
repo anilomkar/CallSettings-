@@ -11,6 +11,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="save_prefix">Save</string>
     <string name="prefix_name_label">Name:</string>
-    <string name="prefix_find_label">Find:</string>
-    <string name="prefix_replace_label">Replace:</string>
+    <string name="prefix_find_label">Starts With:</string>
+    <string name="prefix_replace_label">Replace With:</string>
 </resources>
